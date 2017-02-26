@@ -77,9 +77,11 @@ export default class CommentForm extends Component {
     const date = new Date();
     const newComment = { username, email, comment, date };
     const comments = JSON.parse(localStorage.getItem('comments'));
-    const stringifiedComments = JSON.stringify([ ...comments, newComment ]);
+    const newComments = [ ...comments, newComment ];
+    const stringifiedComments = JSON.stringify(newComments);
 
     localStorage.setItem('comments', stringifiedComments);
+    this.props.updateComments(newComments);
     this.setState(initialState);
   }
 
