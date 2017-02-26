@@ -2,6 +2,7 @@ import React from 'react';
 
 import mockList from '../../mockCommentList';
 import Comment from '../comment/Comment';
+import styles from './style';
 
 export default function CommentList() {
   const listMapping = mockList.map((comment, index) => {
@@ -9,7 +10,7 @@ export default function CommentList() {
   });
 
   return (
-    <div>
+    <div style={styles.container}>
        {listMapping}
     </div>
   );
