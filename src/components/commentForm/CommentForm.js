@@ -8,17 +8,28 @@ function checkEmailFormat(value) {
   return filter.test(value);
 }
 
+function generateDate(date) {
+	const day = date.getDate();
+	const month = date.getMonth() + 1;
+	const year = date.getFullYear();
+	const formattedDate = `${day}-${month}-${year}`;
+
+	return formattedDate;
+}
+
+const initialState = {
+  correctFormatEmail: true,
+  username: '',
+  email: '',
+  comment: '',
+  disabled: true,
+};
+
 export default class CommentForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      correctFormatEmail: true,
-      username: '',
-      email: '',
-      comment: '',
-      disabled: true,
-    };
+    this.state = initialState;
 
     this.onInputChange = this.onInputChange.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
@@ -62,6 +73,14 @@ export default class CommentForm extends Component {
 
   onFormSubmit() {
     console.log("Entre dans onSubmit");
+    const { username, email, comment } = this.state;
+    const date = new Date();
+    const newComment = { username, email, comment, date };
+    const comments = JSON.parse(localStorage.getItem('comments'));
+    const stringifiedComments = JSON.stringify([ ...comments, newComment ]);
+
+    localStorage.setItem('comments', stringifiedComments);
+    this.setState(initialState);
   }
 
   render() {
@@ -70,12 +89,20 @@ export default class CommentForm extends Component {
       <div style={styles.container}>
         <div>
           <label style={styles.elem}>Username</label>
-          <input placeholder="Your username" onChange={this.onInputChange('username')} />
+          <input
+            value={this.state.username}
+            placeholder="Your username"
+            onChange={this.onInputChange('username')}
+          />
         </div>
 
         <div>
           <label style={styles.elem}>Email</label>
-          <input placeholder="Your email" onChange={this.onInputChange('email')} />
+          <input
+            value={this.state.email}
+            placeholder="Your email"
+            onChange={this.onInputChange('email')}
+          />
           {this.state.email && !this.state.correctFormatEmail
             ? <div>Wrong format, please put a valid email.</div>
             : null
@@ -84,7 +111,11 @@ export default class CommentForm extends Component {
 
         <div>
           <label style={styles.elem}>Comment</label>
-          <textarea placeholder="Your comment" onChange={this.onInputChange('comment')} />
+          <textarea
+            value={this.state.comment}
+            placeholder="Your comment"
+            onChange={this.onInputChange('comment')}
+        />
         </div>
 
         <button disabled={this.state.disabled} onClick={this.onFormSubmit}>Send a comment</button>

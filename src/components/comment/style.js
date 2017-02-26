@@ -3,7 +3,6 @@ export default {
     display: 'flex',
     flexFlow : 'column nowrap',
     backgroundColor: '#80d4ff',
-    width: '25%',
     margin: '10px',
     padding: '10px',
     borderRadius: '5px',
