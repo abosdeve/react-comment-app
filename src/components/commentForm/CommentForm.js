@@ -1,21 +1,7 @@
 import React, { Component } from 'react';
 
+import { checkEmailFormat } from './utils/utils';
 import styles from './style';
-
-function checkEmailFormat(value) {
-  const filter = /^([a-zA-Z0-9_\.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-
-  return filter.test(value);
-}
-
-function generateDate(date) {
-	const day = date.getDate();
-	const month = date.getMonth() + 1;
-	const year = date.getFullYear();
-	const formattedDate = `${day}-${month}-${year}`;
-
-	return formattedDate;
-}
 
 const initialState = {
   correctFormatEmail: true,
@@ -81,7 +67,7 @@ export default class CommentForm extends Component {
     const stringifiedComments = JSON.stringify(newComments);
 
     localStorage.setItem('comments', stringifiedComments);
-    this.props.updateComments(newComments);
+    // this.props.updateComments(newComments);
     this.setState(initialState);
   }
 
