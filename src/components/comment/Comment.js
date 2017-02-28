@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { formatDate } from './utils/utils';
+import { formatDate } from '../../utils/utils';
 import styles from './style';
 
 export default function Comment({ data }) {

@@ -1,14 +1,10 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
-// import mockList from '../../mockCommentList';
 import Comment from '../comment/Comment';
 import styles from './style';
 
-export default function CommentList() {
-  const comments = JSON.parse(localStorage.getItem('comments'));
-
-  console.log('Comments :', comments);
-  const listMapping = comments.map((comment, index) => {
+export default function CommentList({ comments }) {
+  const listMapping = comments.slice(0).reverse().map((comment, index) => {
     return <Comment key={index} data={comment} />
   });
 
@@ -18,3 +14,7 @@ export default function CommentList() {
     </div>
   );
 }
+
+CommentList.propTypes = {
+  comments: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+};

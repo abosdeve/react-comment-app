@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import { checkEmailFormat } from './utils/utils';
+import { checkEmailFormat } from '../../utils/utils';
 import styles from './style';
 
 const initialState = {
@@ -14,7 +14,6 @@ const initialState = {
 export default class CommentForm extends Component {
   constructor(props) {
     super(props);
-
     this.state = initialState;
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -26,53 +25,40 @@ export default class CommentForm extends Component {
       const { value } = event.target;
 
       this.setState({ [key]: value }, () => {
-        const { email, username, comment } = this.state;
-        let disabled;
+        const { comment, email, username } = this.state;
+        const emailValue = (key === 'email' ? value : email);
+        const correctFormatEmail = checkEmailFormat(emailValue);
+        const disabled = (!username || !comment || (email && !correctFormatEmail)
+          ? true
+          : false
+        );
 
-        if (key === 'email') {
-          const correctFormatEmail = checkEmailFormat(value);
-
-          disabled = (!username || !comment || (email && !correctFormatEmail) ? true : false);
-          this.setState({ correctFormatEmail });
-        } else {
-          disabled = (username && comment ? false : true);
-        }
-
-        this.setState({ disabled });
+        this.setState({ correctFormatEmail, disabled });
       });
     }
   }
 
-  // Forme longue :
-  // onInputChange(key) {
-  //   console.log(this.state);
-  //   return (event) => {
-  //     this.setState({ [key]: event.target.value }, () => {
-  //       if (this.state.username && this.state.comment) {
-  //         this.setState({ disabled: false });
-  //       } else {
-  //         this.setState({disabled: true})
-  //       }
-  //     });
-  //   }
-  // }
-
   onFormSubmit() {
-    console.log("Entre dans onSubmit");
     const { username, email, comment } = this.state;
-    const date = new Date();
+    const dateObject = new Date();
+    const date = {
+      day: dateObject.getDate(),
+      month: dateObject.getMonth(),
+      year: dateObject.getFullYear(),
+      hours: dateObject.getHours(),
+      minutes: dateObject.getMinutes(),
+      seconds: dateObject.getSeconds(),
+    };
     const newComment = { username, email, comment, date };
-    const comments = JSON.parse(localStorage.getItem('comments'));
-    const newComments = [ ...comments, newComment ];
+    const newComments = [ ...this.props.comments, newComment ];
     const stringifiedComments = JSON.stringify(newComments);
 
     localStorage.setItem('comments', stringifiedComments);
-    // this.props.updateComments(newComments);
+    this.props.addComments(newComments);
     this.setState(initialState);
   }
 
   render() {
-    console.log(this.state);
     return (
       <div style={styles.container}>
         <div>
@@ -92,7 +78,7 @@ export default class CommentForm extends Component {
             onChange={this.onInputChange('email')}
           />
           {this.state.email && !this.state.correctFormatEmail
-            ? <div>Wrong format, please put a valid email.</div>
+            ? <div>Invalid email format</div>
             : null
           }
         </div>
@@ -111,3 +97,8 @@ export default class CommentForm extends Component {
     );
   }
 }
+
+CommentForm.propTypes = {
+  addComments: PropTypes.func.isRequired,
+  comments: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+};
